@@ -1,8 +1,9 @@
 from inspect import Parameter
 import pandas as pd
+import numpy as np
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
-
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, cross_val_score
 #Константы
 index = 0
 name = "Name"
@@ -33,12 +34,23 @@ dftest[embarked] = dftest[embarked].replace({'C':int(1),'Q':int(2),'S':int(3)})
 #Новый CVS
 dft = dft.drop(['Survived','PassengerId','Name','Ticket','Cabin'], axis=1)
 dftest = dftest.drop(['PassengerId','Name','Ticket','Cabin'], axis=1)
-print(dftest[:LastShow])
-print(dftest.info())
 
 #ML
 tree = DecisionTreeClassifier(max_depth=2, random_state=17)
 tree.fit(dft, sur)
 predictions = tree.predict(dftest)
-print(predictions)
+clf = RandomForestClassifier(criterion='entropy',
+    n_estimators=700,
+    min_samples_split=10,
+    min_samples_leaf=1,
+    max_features='auto',
+    oob_score=True,
+    random_state=1,
+    n_jobs=-1)
+x_train, x_test, y_train, y_test = train_test_split(dft, sur, test_size=0.2)
+clf.fit(x_train, np.ravel(y_train))
+
 #Вывод
+print("RF Accuracy: "+repr(round(clf.score(x_test, y_test) * 100, 2)) + "%")
+result_rf=cross_val_score(clf,x_train,y_train,cv=10,scoring='accuracy')
+print('The cross validated score for Random forest is:',round(result_rf.mean()*100,2))
