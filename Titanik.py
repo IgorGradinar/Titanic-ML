@@ -17,17 +17,18 @@ fare = "Fare"
 dftest = pd.read_csv('test.csv')  #Test
 dft = pd.read_csv('train.csv')    #Learn
 sur = dft['Survived']
+print(dft)
 
 #Преобразования
 # 0 - Unknown, 1 - Cherbourg, 2 - Queenstown, 3 - Southampton
-dft[age] = dft[age].fillna(0)
-dft[embarked] = dft[embarked].fillna(0)
+dft[age] = dft[age].fillna((dft[age].sum())/len(dft))
+dft[embarked] = dft[embarked].fillna(dft[embarked].value_counts().index[0])
 dft[sex] = dft[sex].map(lambda sex: int(sex == 'male'))
 dft[embarked] = dft[embarked].replace({'C':int(1),'Q':int(2),'S':int(3)})
 
-dftest[age] = dftest[age].fillna(0)
+dftest[age] = dftest[age].fillna((dftest[age].sum())/len(dftest))
 dftest[fare] = dftest[fare].fillna(0)
-dftest[embarked] = dftest[embarked].fillna(0)
+dftest[embarked] = dftest[embarked].fillna(dftest[embarked].value_counts().index[0])
 dftest[sex] = dftest[sex].map(lambda sex: int(sex == 'male'))
 dftest[embarked] = dftest[embarked].replace({'C':int(1),'Q':int(2),'S':int(3)})
 
