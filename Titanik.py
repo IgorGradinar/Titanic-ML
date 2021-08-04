@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import roc_curve, auc, roc_auc_score
 
 #Константы
 index = 0
@@ -53,6 +53,9 @@ proba_true = proba[:,1]
 fpr , tpr , treshold = roc_curve(y_test, proba_true)
 
 #Вывод
+au = roc_auc_score(y_test, proba_true)
+print('LogisticRegression: ROC AUC=%.3f' % (au))
+
 roc_auc = auc(fpr, tpr) # ROC анализ
 print('ROC AUC: %0.2f' % roc_auc)
 result_rf=cross_val_score(clf,x_train,y_train,cv=10,scoring='accuracy') # Проверка скользящего контроля
